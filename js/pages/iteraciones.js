@@ -12,7 +12,7 @@ export function renderIteraciones(){
 
       <table class="table">
         <thead>
-          <tr><th>Iteración</th><th>Rango</th><th>Objetivo</th><th>Historias</th><th class="right">Avance</th></tr>
+          <tr><th>Iteración</th><th>Fecha</th><th>Objetivo</th><th>Historias</th><th class="right">Avance</th></tr>
         </thead>
         <tbody>
           ${st.iteraciones.map(it => iterRow(it, st)).join("")}
@@ -33,10 +33,18 @@ function iterRow(it, st){
   return `
     <tr>
       <td><b>${it.nombre}</b></td>
-      <td>${it.rango}</td>
+      <td>${iterDate(it.id)}</td>
       <td>${it.objetivo}</td>
       <td>${stories.map(s=>s.id).join(", ") || "—"}</td>
       <td class="right">${pct}%</td>
     </tr>
   `;
+}
+
+function iterDate(id){
+  if(id==="it1") return "27 de diciembre 2025";
+  if(id==="it2") return "28 de diciembre 2025";
+  if(id==="it3") return "3 de enero 2026";
+  if(id==="it4") return "4 de enero 2026";
+  return "";
 }

@@ -20,12 +20,35 @@ export function layout(contentHtml){
   const navItems = [
     { id:"home", label:"Línea de tiempo" },
     { id:"fases", label:"Fases XP" },
-    { id:"historias", label:"Historias" },
     { id:"iteraciones", label:"Iteraciones" },
     { id:"equipo", label:"Equipo" },
     { id:"metricas", label:"Métricas" },
     { id:"workshop", label:"AntCiberDron" }
   ];
+
+  // Sidebar incluido de forma global en el layout principal (siempre visible)
+  const sidebarHtml = `
+    <aside class="sidebar-left">
+      <div class="card-pad card">
+        <div class="h2">Fases</div>
+        <div class="muted">Visualiza el flujo del proyecto</div>
+        <hr class="sep" />
+        <div class="sideList">
+          <div class="sideItem ${route==="planning"?"active":""}" data-phase="planning">Planning</div>
+          <div class="sideItem ${route==="fases"?"active":""}" data-phase="design">Design</div>
+          <div class="sideItem ${route==="home"?"active":""}" data-phase="coding">Coding</div>
+          <div class="sideItem" data-phase="testing">Testing</div>
+        </div>
+      </div>
+    </aside>`;
+
+  const bodyHtml = `
+    <div class="twoCol">
+      ${sidebarHtml}
+      <main class="main-content">
+        ${contentHtml}
+      </main>
+    </div>`;
 
   const nav = `
   <div class="nav">
@@ -55,10 +78,11 @@ export function layout(contentHtml){
       </div>
     </div>
   </div>
+
   <div class="container">
     ${session?`<div class="small muted" style="margin:10px 0 0 0">Sesión: <b>${escapeHtml(session.nombre)}</b> — ${escapeHtml(session.rol)}</div>`:""}
     <div style="height:10px"></div>
-    ${contentHtml}
+    ${bodyHtml}
   </div>
   ${modalHtml()}
   `;
@@ -82,12 +106,27 @@ export function layout(contentHtml){
     document.body.style.filter = next==="light" ? "invert(1) hue-rotate(180deg)" : "none";
   });
 
+  // Sidebar (fases) click handling — existe siempre en el layout principal
+  document.querySelectorAll('.sideItem').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      document.querySelectorAll('.sideItem').forEach(s=>s.classList.remove('active'));
+      el.classList.add('active');
+      const phase = el.dataset.phase;
+      // Si se pulsa 'planning', navegamos a la página de Planning
+      if(phase === 'planning'){
+        navigate('planning');
+        return;
+      }
+      // Por ahora solo destacamos la fase; en futuro podemos filtrar o mapear fases a rutas adicionales.
+    });
+  });
+
   // Modal handlers are registered in modal.js
 }
 
 function labelIcon(id){
   if(id==="fases") return "⛳";
-  if(id==="historias") return "🧾";
+  if(id==="planning") return "📋";
   if(id==="iteraciones") return "🔁";
   if(id==="equipo") return "👥";
   if(id==="metricas") return "📈";

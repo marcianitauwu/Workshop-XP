@@ -1,7 +1,11 @@
 import { renderHome } from "./pages/home.js";
 import { renderFases } from "./pages/fases.js";
+import { renderPlanning } from "./pages/planning.js";
 import { renderHistorias } from "./pages/historias.js";
+import { renderPlanEntregas } from "./pages/plan_entregas.js";
+import { renderVelocidad } from "./pages/velocidad.js";
 import { renderIteraciones } from "./pages/iteraciones.js";
+import { renderReuniones } from "./pages/reuniones.js";
 import { renderEquipo } from "./pages/equipo.js";
 import { renderMetricas } from "./pages/metricas.js";
 import { renderWorkshop } from "./pages/workshop.js";
@@ -9,8 +13,12 @@ import { renderWorkshop } from "./pages/workshop.js";
 const routes = {
   home: renderHome,
   fases: renderFases,
+  planning: renderPlanning,
   historias: renderHistorias,
+  "plan-entregas": renderPlanEntregas,
+  velocidad: renderVelocidad,
   iteraciones: renderIteraciones,
+  reuniones: renderReuniones,
   equipo: renderEquipo,
   metricas: renderMetricas,
   workshop: renderWorkshop

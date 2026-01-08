@@ -174,3 +174,22 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
   background: rgba(255,255,255,.03)
 }
 .mono{font-family:var(--mono)}
+.card-small{
+  background: radial-gradient(800px 150px at 30% -40%, rgba(43,140,255,.25), transparent 60%),
+              linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding:12px;
+}
+
+/* Sidebar izquierdo para la sección Planning */
+.twoCol{display:flex;gap:16px;align-items:flex-start}
+.sidebar-left{width:240px;flex:0 0 240px}
+.sidebar-left .card{padding:12px}
+.sideList{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.sideItem{padding:10px 12px;border-radius:10px;background: rgba(255,255,255,.02);border:1px solid var(--border);cursor:pointer;color:var(--muted)}
+.sideItem.active{background: rgba(43,140,255,.12);color:var(--text);border-color: rgba(43,140,255,.25)}
+.main-content{flex:1}
+
+@media (max-width:900px){.twoCol{flex-direction:column}.sidebar-left{width:100%}.main-content{width:100%}}

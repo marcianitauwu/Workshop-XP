@@ -1,0 +1,17 @@
+import { layout } from "../render/layout.js";
+
+export function renderPlanEntregas(){
+  layout(`
+    <div class="card pad">
+      <h1 class="h1">Plan de entregas</h1>
+      <div class="muted">Fechas y entregables acordados para las entregas.</div>
+      <hr class="sep" />
+      <ul class="list">
+        <li><b>27 de diciembre 2025:</b> Planificación + MVP</li>
+        <li><b>28 de diciembre 2025:</b> Diseño tangible + prototipos</li>
+        <li><b>3 de enero 2026:</b> Coding + autómata + CSV</li>
+        <li><b>4 de enero 2026:</b> Testing + evidencia + demo</li>
+      </ul>
+    </div>
+  `);
+}

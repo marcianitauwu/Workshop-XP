@@ -9,4 +9,4 @@ export const icons = {
   chart: `<svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M7 14v4M11 10v8M15 6v12M19 12v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`,
   list: `<svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`,
   layers: `<svg class="icon" viewBox="0 0 24 24" fill="none"><path d="m12 2 10 6-10 6L2 8l10-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m2 12 10 6 10-6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m2 16 10 6 10-6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>`
-};
+}; 
