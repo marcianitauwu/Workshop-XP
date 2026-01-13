@@ -1,0 +1,173 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' =========================
+' USUARIOS / ROLES / LOGIN
+' =========================
+class Usuario {
+  +id: int
+  +username: String
+  +password: String
+  +rol: Rol
+}
+
+enum Rol {
+  KGD
+  IIA
+}
+
+class AuthService {
+  +autenticarse(user:String, pass:String): boolean
+  +intentosRestantes(user:String): int
+}
+AuthService ..> Usuario
+
+' =========================
+' CSV / COORDENADAS
+' =========================
+class CoordenadaUK {
+  +id: int
+  +geoposicion: String
+  +lunes: String
+  +martes: String
+  +miercoles: String
+  +jueves: String
+  +viernes: String
+  +tipoArsenal: String
+  +w: String
+}
+
+class CSVService {
+  +cargarCSV(path:String): List<CoordenadaUK>
+  +procesarCSV(datos:List<CoordenadaUK>): List<CoordenadaUK>
+}
+CSVService ..> CoordenadaUK
+
+' =========================
+' IA + DFA + BBA
+' =========================
+interface InteligenciaArtificial {
+  +buscarTipoArsenal(tipoArsenal:String): boolean
+}
+
+class IAService {
+  +buscarTipoArsenal(tipoArsenal:String): boolean
+}
+IAService ..|> InteligenciaArtificial
+
+class AutomataDFA {
+  +evaluar(w:String): boolean
+}
+
+class EvaluadorExplosion {
+  +decidirExplosion(c:CoordenadaUK): boolean
+}
+EvaluadorExplosion ..> AutomataDFA
+EvaluadorExplosion ..> CoordenadaUK
+
+class BBAService {
+  +mostrarCoordenadaExplota(c:CoordenadaUK): String
+}
+BBAService ..> EvaluadorExplosion
+BBAService ..> CoordenadaUK
+
+class CoordinadorAntCiberDron {
+  +validarTipoArsenal(c:CoordenadaUK): boolean
+  +ejecutarFlujoCSV(path:String): List<CoordenadaUK>
+}
+CoordinadorAntCiberDron ..> CSVService
+CoordinadorAntCiberDron ..> IAService
+CoordinadorAntCiberDron ..> BBAService
+CoordinadorAntCiberDron ..> CoordenadaUK
+
+' =========================
+' HORMIGUERO / CICLO DE VIDA
+' =========================
+abstract class Hormiga {
+  +id: int
+  +energia: double
+  +estado: String
+  +comer(a:Alimento): void
+}
+
+class HLarva {
+  +transformar(a:Alimento): Hormiga
+}
+Hormiga <|-- HLarva
+
+class HSoldado
+Hormiga <|-- HSoldado
+
+abstract class Alimento {
+  +nombre: String
+}
+
+class Nectar
+class Carnivoro
+
+Alimento <|-- Nectar
+Alimento <|-- Carnivoro
+
+note right of HLarva
+  PDF: TIPO_HORMIGA nace como HLarva.
+  HLarva vive comiendo Néctar.
+  Si come ALIMENTO se transforma a su tipo.
+end note
+
+note right of HSoldado
+  PDF: HSoldado vive si come Carnívoro.
+end note
+
+class HormigueroVirtual {
+  +id: int
+  +crearLarva(): HLarva
+  +alimentar(h:Hormiga, a:Alimento): void
+  +transformarASoldado(larva:HLarva): HSoldado
+}
+HormigueroVirtual o-- Hormiga
+HormigueroVirtual ..> HLarva
+HormigueroVirtual ..> HSoldado
+HormigueroVirtual ..> Alimento
+
+' =========================
+' ANT CIBER DRON (HSoldado)
+' =========================
+class AntCiberDron {
+  +id: int
+  +energia: double
+  +buscarTipoArsenal(tipo:String): boolean
+  +evaluarExplosion(c:CoordenadaUK): boolean
+}
+
+' AntCiberDron ES un HSoldado
+HSoldado <|-- AntCiberDron
+
+class Metralleta
+class Laser {
+  +potencia: double
+}
+class TurboReactor {
+  +volar(): void
+}
+class FuentePoder {
+  +capacidad: double
+  +cargaActual: double
+  +recargar(): void
+  +reemplazar(): void
+}
+
+AntCiberDron o-- Metralleta
+AntCiberDron o-- Laser
+AntCiberDron o-- TurboReactor
+AntCiberDron o-- FuentePoder
+
+AntCiberDron ..> IAService
+AntCiberDron ..> EvaluadorExplosion
+AntCiberDron ..> CoordenadaUK
+
+note right of FuentePoder
+  Fuente de poder recargable y reemplazable
+  con asistencia del IIA.
+end note
+
+@enduml

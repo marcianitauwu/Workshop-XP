@@ -1,0 +1,167 @@
+@startuml
+hide methods
+skinparam classAttributeIconSize 0
+
+' =====================
+' USUARIOS / LOGIN
+' =====================
+entity "USUARIO" as U {
+  *id_usuario : INT <<PK>>
+  username : VARCHAR
+  password : VARCHAR
+  rol : VARCHAR
+}
+
+entity "CONTROL_LOGIN" as CL {
+  *id_usuario : INT <<PK,FK>>
+  intentos_restantes : INT
+  bloqueado : BOOLEAN
+  ultimo_intento : DATETIME
+}
+U ||--|| CL : controla
+
+' =====================
+' COORDENADAS
+' =====================
+entity "COORDENADA_UK" as C {
+  *id_coord : INT <<PK>>
+  geoposicion : VARCHAR
+  lunes : VARCHAR
+  martes : VARCHAR
+  miercoles : VARCHAR
+  jueves : VARCHAR
+  viernes : VARCHAR
+  tipo_arsenal : VARCHAR
+  w : VARCHAR
+  fecha_importacion : DATETIME
+}
+
+U ||--o{ C : importa
+
+' =====================
+' RESULTADO DFA / BBA
+' =====================
+entity "EVALUACION_BBA" as E {
+  *id_eval : INT <<PK>>
+  id_coord : INT <<FK>>
+  explota : BOOLEAN
+  coord_explota : VARCHAR
+  fecha_eval : DATETIME
+}
+C ||--o{ E : genera
+
+' =====================
+' HORMIGUERO / HORMIGAS
+' =====================
+entity "HORMIGUERO" as H {
+  *id_hormiguero : INT <<PK>>
+  id_usuario : INT <<FK>>
+  nombre : VARCHAR
+}
+
+entity "HORMIGA" as HO {
+  *id_hormiga : INT <<PK>>
+  id_hormiguero : INT <<FK>>
+  tipo : VARCHAR
+  energia : DOUBLE
+  estado : VARCHAR
+  fecha_creacion : DATETIME
+}
+
+U ||--o{ H
+H ||--o{ HO
+
+' =====================
+' ALIMENTOS
+' =====================
+entity "ALIMENTO" as A {
+  *id_alimento : INT <<PK>>
+  nombre : VARCHAR
+  tipo : VARCHAR
+}
+
+entity "ALIMENTACION" as AL {
+  *id_alimentacion : INT <<PK>>
+  id_hormiga : INT <<FK>>
+  id_alimento : INT <<FK>>
+  fecha : DATETIME
+}
+
+HO ||--o{ AL
+A  ||--o{ AL
+
+' =====================
+' TRANSFORMACIÓN
+' =====================
+entity "TRANSFORMACION" as T {
+  *id_transformacion : INT <<PK>>
+  id_hormiga_origen : INT <<FK>>
+  id_hormiga_destino : INT <<FK>>
+  tipo_origen : VARCHAR
+  tipo_destino : VARCHAR
+  fecha : DATETIME
+}
+
+HO ||--o{ T : origen
+HO ||--o{ T : destino
+
+' =====================
+' METRALLETA
+' =====================
+entity "METRALLETA" as M {
+  *id_metralleta : INT <<PK>>
+  id_hormiga : INT <<FK,UNIQUE>>
+  calibre : VARCHAR
+  fecha_instalacion : DATETIME
+}
+
+HO ||--o| M : tiene
+
+' =====================
+' LASER
+' =====================
+entity "LASER" as L {
+  *id_laser : INT <<PK>>
+  id_hormiga : INT <<FK,UNIQUE>>
+  potencia : DOUBLE
+  fecha_instalacion : DATETIME
+}
+
+HO ||--o| L : tiene
+
+' =====================
+' TURBO REACTOR
+' =====================
+entity "TURBO_REACTOR" as TR {
+  *id_turbo : INT <<PK>>
+  id_hormiga : INT <<FK,UNIQUE>>
+  estado : VARCHAR
+  fecha_instalacion : DATETIME
+}
+
+HO ||--o| TR : tiene
+
+' =====================
+' FUENTE DE PODER
+' =====================
+entity "FUENTE_PODER" as FP {
+  *id_fuente : INT <<PK>>
+  id_hormiga : INT <<FK,UNIQUE>>
+  capacidad : DOUBLE
+  carga_actual : DOUBLE
+  recargable : BOOLEAN
+  reemplazable : BOOLEAN
+  fecha_ultima_recarga : DATETIME
+}
+
+HO ||--o| FP : tiene
+
+note right of HO
+  AntCiberDron (HSoldado) puede tener:
+  - Metralleta
+  - Láser
+  - Turbo Reactor
+  - Fuente de Poder
+end note
+
+@enduml

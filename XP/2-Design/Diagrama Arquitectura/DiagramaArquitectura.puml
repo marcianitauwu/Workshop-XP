@@ -1,0 +1,51 @@
+@startuml
+skinparam componentStyle rectangle
+left to right direction
+
+rectangle "Arquitectura - Sistema AntCiberDron" {
+
+  package "UI (Presentación)" {
+    [Login UI]
+    [UI CSV (Carga / Resultados)]
+    [UI Hormiguero Virtual]
+  }
+
+  package "Servicios (Aplicación)" {
+    [AuthService]
+
+    [CoordinadorAntCiberDron]
+    [CSVService]
+    [IAService]
+    [AutomataDFAService]
+    [EvaluadorExplosion]
+    [BBAService]
+
+    [HormigueroService]
+    [ConfiguracionAntService]
+    [EnergiaService]
+  }
+
+  package "Dominio (Core)" {
+    [Usuario]
+    [Rol]
+    [CoordenadaUK]
+
+    [HormigueroVirtual]
+    [Hormiga (HLarva / HSoldado)]
+    [AntCiberDron]
+
+    [Metralleta]
+    [Laser]
+    [TurboReactor]
+    [FuentePoder]
+
+    [AutomataDFA]
+    [ReglasExplosión]
+  }
+
+  package "Persistencia / Recursos" {
+    database "DB"
+    file "CSV"
+  }
+}
+@enduml

@@ -1,0 +1,78 @@
+@startuml 
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Usuario KGD" as kgd
+actor "IIA (Asistente IA)" as iia
+
+rectangle "Sistema AntCiberDron" {
+
+  ' ===== Seguridad =====
+  usecase "Autenticarse\n(máx. 3 intentos)" as UC_Login
+
+  ' ===== CSV / Coordenadas =====
+  usecase "Cargar archivo CSV" as UC_CargarCSV
+  usecase "Procesar CSV" as UC_ProcesarCSV
+  usecase "Validar tipo de arsenal" as UC_ValidarArsenal
+  usecase "Mostrar coordenadas\na destruir" as UC_MostrarCoord
+
+  ' ===== IA + Autómata + BBA =====
+  usecase "Buscar tipo de arsenal\n(Inteligencia Artificial)" as UC_BuscarIA
+  usecase "Evaluar autómata (DFA)\n(Decidir explosión)" as UC_EvaluarDFA
+  usecase "Mostrar coordenada\ndonde explota BBA" as UC_MostrarExplota
+
+  ' ===== Hormiguero =====
+  usecase "Gestionar hormiguero virtual" as UC_Hormiguero
+  usecase "Crear Larva" as UC_CrearHormiga
+
+  ' Proceso del PDF (nace HLarva y se transforma por alimento)
+  usecase "Alimentar Hormiga" as UC_NacerLarva
+  usecase "Alimentar con Nectar" as UC_ComerNectar
+  usecase "Alimentar con Carne" as UC_ComerCarne
+  usecase "Transformarse a H. Soldado" as US_Transformar
+  usecase "Configurar extremidades\n(Metralleta/Láser)" as UC_Extremidades
+
+}
+
+' ===== Actores -> Casos =====
+kgd --> UC_Login
+kgd --> UC_CargarCSV
+kgd --> UC_Hormiguero
+
+
+' IIA apoya la IA del sistema
+iia --> UC_BuscarIA
+
+' ===== Relaciones (includes) =====
+UC_CargarCSV --> UC_ProcesarCSV : <<include>>
+UC_ProcesarCSV --> UC_ValidarArsenal : <<include>>
+UC_ProcesarCSV --> UC_MostrarCoord : <<include>>
+
+UC_ValidarArsenal --> UC_BuscarIA : <<include>>
+UC_BuscarIA --> UC_EvaluarDFA : <<include>>
+UC_EvaluarDFA --> UC_MostrarExplota : <<include>>
+
+UC_Hormiguero --> UC_CrearHormiga : <<include>>
+
+' ===== Flujo de vida según PDF =====
+UC_CrearHormiga --> UC_NacerLarva : <<include>>
+UC_NacerLarva --> UC_ComerNectar : <<extends>>
+UC_NacerLarva --> UC_ComerCarne : <<extends>>
+UC_ComerCarne --> US_Transformar 
+US_Transformar --> UC_Extremidades : <<extends>>
+
+note right of UC_ComerNectar
+  Hormiga come Néctar para vivir.
+end note
+
+note right of UC_NacerLarva
+  El TIPO_HORMIGA nace como Larva.
+end note
+
+note right of US_Transformar 
+  H. Soldado vive solo sis come carne.
+  (La comida provoca la transformación)
+end note
+
+@enduml
