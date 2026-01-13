@@ -20,7 +20,6 @@ export function layout(contentHtml){
   const navItems = [
     { id:"home", label:"Línea de tiempo" },
     { id:"fases", label:"Fases XP" },
-    { id:"iteraciones", label:"Iteraciones" },
     { id:"equipo", label:"Equipo" },
     { id:"metricas", label:"Métricas" },
     { id:"workshop", label:"AntCiberDron" }
@@ -127,7 +126,6 @@ export function layout(contentHtml){
 function labelIcon(id){
   if(id==="fases") return "⛳";
   if(id==="planning") return "📋";
-  if(id==="iteraciones") return "🔁";
   if(id==="equipo") return "👥";
   if(id==="metricas") return "📈";
   if(id==="workshop") return "🚀";

@@ -42,9 +42,9 @@ function iterRow(it, st){
 }
 
 function iterDate(id){
-  if(id==="it1") return "27 de diciembre 2025";
-  if(id==="it2") return "28 de diciembre 2025";
-  if(id==="it3") return "3 de enero 2026";
-  if(id==="it4") return "4 de enero 2026";
+  if(id==="it1") return "09 de enero 2026";
+  if(id==="it2") return "10 de enero 2026";
+  if(id==="it3") return "11 de enero 2026";
+  if(id==="it4") return "12 de enero 2026";
   return "";
 }
