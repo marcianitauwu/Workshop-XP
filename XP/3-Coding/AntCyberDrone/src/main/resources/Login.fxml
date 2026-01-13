@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="UserInterface.Controllers.LoginController"
+      alignment="CENTER" spacing="15" style="-fx-background-color: #1a1a1a; -fx-padding: 20;">
+
+    <VBox alignment="CENTER" spacing="20" maxWidth="400" style="-fx-border-color: #333; -fx-border-width: 1; -fx-padding: 40; -fx-background-color: #0d0d0d; -fx-border-radius: 5;">
+        <Label text="AntCyberDrone" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #0099ff;"/>
+        <Label text="Sistema de Control de Hormigas Ciberneticas" style="-fx-font-size: 12; -fx-text-fill: #888; -fx-wrap-text: true; -fx-text-alignment: center;"/>
+
+        <Separator prefWidth="350"/>
+
+        <VBox spacing="15" alignment="CENTER">
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Usuario:" style="-fx-text-fill: #fff; -fx-font-size: 12;"/>
+                <TextField fx:id="usernameField" promptText="patmic" 
+                          style="-fx-font-size: 12; -fx-padding: 10; -fx-background-color: #1a1a1a; -fx-text-fill: #fff; -fx-border-color: #444; -fx-border-radius: 3;" 
+                          prefWidth="300"/>
+            </VBox>
+
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Contraseña:" style="-fx-text-fill: #fff; -fx-font-size: 12;"/>
+                <PasswordField fx:id="passwordField" promptText="Contraseña" 
+                              style="-fx-font-size: 12; -fx-padding: 10; -fx-background-color: #1a1a1a; -fx-text-fill: #fff; -fx-border-color: #444; -fx-border-radius: 3;" 
+                              prefWidth="300"/>
+            </VBox>
+        </VBox>
+
+        <Button fx:id="loginButton" text="INGRESAR" onAction="#handleLogin" 
+                style="-fx-font-size: 14; -fx-padding: 12; -fx-background-color: #0099ff; -fx-text-fill: #000; -fx-font-weight: bold; -fx-border-radius: 3; -fx-cursor: hand;" 
+                prefWidth="300"/>
+
+        <Label fx:id="messageLabel" style="-fx-font-size: 12; -fx-text-fill: #888; -fx-wrap-text: true; -fx-text-alignment: center;" prefWidth="300"/>
+    </VBox>
+</VBox>
