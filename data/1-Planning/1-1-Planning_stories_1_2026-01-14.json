@@ -1,0 +1,98 @@
+[
+  {
+    "id": "US-001",
+    "title": "Autenticación con 3 intentos",
+    "description": "Como profesor/miembro del grupo, quiero iniciar sesión (usuario/clave) con máximo 3 intentos para acceder al aplicativo.",
+    "priority": "Alta",
+    "points": 5,
+    "completed": false,
+    "date": "2026-01-14T16:53:22.554Z",
+    "iteration": "it1",
+    "status": "pendiente",
+    "assigned": ["u2", "u3"]
+  },
+  {
+    "id": "US-002",
+    "title": "Leer y mostrar Grupo##.csv con loading",
+    "description": "Como usuario KGD, quiero cargar el archivo CSV y ver las coordenadas con una animación de loading \\l/-l y porcentaje para cada línea.",
+    "priority": "Alta",
+    "points": 8,
+    "completed": false,
+    "date": "2026-01-14T16:53:22.554Z",
+    "iteration": "it1",
+    "status": "pendiente",
+    "assigned": ["u2", "u3"]
+  },
+  {
+    "id": "US-003",
+    "title": "Diseño de autómata (AFD) + grafo + gramática",
+    "description": "Como equipo, quiero diseñar el AFD según los últimos dígitos de cédulas para validar el lenguaje de tipo arsenal.",
+    "priority": "Alta",
+    "points": 8,
+    "completed": false,
+    "date": "2026-01-14T16:53:22.554Z",
+    "iteration": "it2",
+    "status": "pendiente",
+    "assigned": ["u4", "u2"]
+  },
+  {
+    "id": "US-004",
+    "title": "Modelo de dominio: Hormiga + TIPO_HORMIGA + Alimentos",
+    "description": "Como equipo, quiero modelar Hormiga, HLarva y sus transformaciones según el alimento para cumplir el PDF.",
+    "priority": "Media",
+    "points": 5,
+    "completed": false,
+    "date": "2026-01-14T16:53:22.554Z",
+    "iteration": "it2",
+    "status": "pendiente",
+    "assigned": ["u2", "u3"]
+  },
+  {
+    "id": "US-005",
+    "title": "Evaluar arsenal con autómata y decidir explosión",
+    "description": "Como AntCiberDron, quiero buscar tipo de arsenal y retornar true/false según AFD, mostrando la coordenada donde explota BBA.",
+    "priority": "Alta",
+    "points": 8,
+    "completed": false,
+    "date": "2026-01-14T16:53:22.554Z",
+    "iteration": "it3",
+    "status": "pendiente",
+    "assigned": ["u2", "u3"]
+  },
+  {
+    "id": "US-006",
+    "title": "Pantallas de hormiguero virtual para crear hormigas",
+    "description": "Como usuario KGD, quiero crear hormigas en un hormiguero virtual (UI) para administrar tipos y alimentos.",
+    "priority": "Media",
+    "points": 5,
+    "completed": false,
+    "date": "2026-01-14T16:53:22.554Z",
+    "iteration": "it3",
+    "status": "pendiente",
+    "assigned": ["u2", "u3"]
+  },
+  {
+    "id": "US-007",
+    "title": "Pruebas unitarias e integración",
+    "description": "Como tester, quiero preparar pruebas unitarias e integración para autenticación, CSV y autómata.",
+    "priority": "Alta",
+    "points": 5,
+    "completed": false,
+    "date": "2026-01-14T16:53:22.554Z",
+    "iteration": "it4",
+    "status": "pendiente",
+    "assigned": ["u5", "u2"]
+  },
+  {
+    "id": "US-008",
+    "title": "Evidencias en video por fase (<=3 min c/u)",
+    "description": "Como profesor, quiero ver videos cortos trabajando por fase, almacenados en evidencias y enlazados desde el dashboard.",
+    "priority": "Alta",
+    "points": 3,
+    "completed": false,
+    "date": "2026-01-14T16:53:22.554Z",
+    "iteration": "it4",
+    "status": "pendiente",
+    "assigned": ["u1", "u4"]
+  }
+]

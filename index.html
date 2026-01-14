@@ -42,8 +42,8 @@
             <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
                 <i class="fas fa-moon" id="theme-icon"></i>
             </button>
-            <button class="backup-btn" onclick="exportAllData()">
-                <i class="fas fa-download"></i> Exportar
+            <button class="backup-btn" onclick="manualLoadFromData()" title="Cargar desde carpeta data/">
+                <i class="fas fa-sync-alt"></i> Cargar
             </button>
         </div>
     </nav>
@@ -168,14 +168,6 @@
                     <div id="iterations-container"></div>
                     <button class="btn-add-artifact" onclick="addArtifact('iterations')">
                         <i class="fas fa-plus"></i> Nueva Iteración
-                    </button>
-                </div>
-
-                <div class="artifact-section">
-                    <h3><i class="fas fa-sync-alt"></i> Rotaciones</h3>
-                    <div id="rotations-container"></div>
-                    <button class="btn-add-artifact" onclick="addArtifact('rotations')">
-                        <i class="fas fa-plus"></i> Nueva Rotación
                     </button>
                 </div>
 

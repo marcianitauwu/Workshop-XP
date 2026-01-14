@@ -10,7 +10,6 @@ const data = {
         releases: [],
         velocity: [],
         iterations: [],
-        rotations: [],
         meetings: []
     },
     design: {
@@ -70,8 +69,8 @@ const phaseConfig = {
 };
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    loadAllData();
+document.addEventListener('DOMContentLoaded', async () => {
+    await autoLoadFromDataFolder();
     loadTheme();
     switchPhase('planning');
 });
@@ -357,7 +356,6 @@ function getModalTitle(type) {
         releases: 'Plan de Entrega',
         velocity: 'Velocidad de Proyecto',
         iterations: 'Iteración',
-        rotations: 'Rotación',
         meetings: 'Reunión',
         metaphor: 'Metáfora del Sistema',
         crc: 'Tarjeta CRC',
@@ -454,16 +452,120 @@ function getModalForm(type) {
         `,
         crc: `
             <div class="form-group">
-                <label>Nombre de Clase</label>
-                <input type="text" id="input-class-name" placeholder="Usuario" required>
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa la tarjeta CRC..." required></textarea>
             </div>
             <div class="form-group">
-                <label>Responsabilidades</label>
-                <textarea id="input-responsibilities" placeholder="Una por línea..."></textarea>
+                <label>Link (Documento, Imagen, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        metaphor: `
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa la metáfora del sistema..." required></textarea>
             </div>
             <div class="form-group">
-                <label>Colaboradores</label>
-                <textarea id="input-collaborators" placeholder="Una por línea..."></textarea>
+                <label>Link (Documento, Imagen, Drive, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        spikes: `
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="input-title" placeholder="Solución Puntual..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa la solución..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Documento, GitHub, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        minimal: `
+            <div class="form-group">
+                <label>Funcionalidad</label>
+                <input type="text" id="input-title" placeholder="Funcionalidad Mínima..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa la funcionalidad mínima..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Documento, Prototipo, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        refactoring: `
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="input-title" placeholder="Reciclaje/Refactoring..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa los cambios realizados..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Commit, Pull Request, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        classDiagram: `
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" id="input-title" placeholder="Diagrama de Clases v1.0..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa el diagrama..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Imagen, Documento, Draw, Lucidchart, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        useCases: `
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" id="input-title" placeholder="Casos de Uso..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa los casos de uso..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Imagen, Documento, Lucidchart, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        architecture: `
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" id="input-title" placeholder="Arquitectura del Sistema..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa la arquitectura..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Imagen, Documento, Draw, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        erDiagram: `
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" id="input-title" placeholder="Diagrama Entidad-Relación..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa el modelo de datos..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Imagen, Documento, Lucidchart, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
             </div>
         `,
         teamMember: `
@@ -503,7 +605,7 @@ function getModalForm(type) {
                 <label>Link (GitHub, GitLab, Drive, etc.)</label>
                 <input type="url" id="input-link" placeholder="https://github.com/..." required>
             </div>
-            `,
+        `,
         pairProgramming: `
             <div class="form-group">
                 <label>Sesión</label>
@@ -517,31 +619,56 @@ function getModalForm(type) {
         <label>Link (Repositorio / Documento)</label>
         <input type="url" id="input-link" placeholder="https://..." required>
         </div>
+        `,
+        deployment: `
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="input-title" placeholder="Implantación v1.0..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa la implantación..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Servidor, Documento, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        acceptanceTests: `
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="input-title" placeholder="Prueba de Aceptación..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa la prueba..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Documento, GitHub, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        meetings: `
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="input-title" placeholder="Reunión..." required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa la reunión..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Documento, Acta, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
         `
-
     };
     
-    // Default form for file uploads
-    const defaultFileForm = `
-        <div class="form-group">
-            <label>Título</label>
-            <input type="text" id="input-title" required>
-        </div>
-        <div class="form-group">
-            <label>Descripción</label>
-            <textarea id="input-description"></textarea>
-        </div>
-        <div class="form-group">
-            <label>Archivo</label>
-            <input type="file" id="input-file" accept="image/*,.pdf">
-        </div>
-    `;
-    
-    return forms[type] || defaultFileForm;
+    return forms[type] || forms['unitTests'];
 }
 
 // Save artifact
-function saveArtifact() {
+async function saveArtifact() {
     const type = currentArtifactType;
     const artifact = collectFormData(type);
     
@@ -579,10 +706,259 @@ function saveArtifact() {
         data[phaseKey][type].push(artifact);
     }
 
+    // Guardar en localStorage
     saveToLocalStorage(phaseKey, type);
+    
     closeModal();
     switchPhase(currentPhase);
-    downloadArtifact(phaseKey, type, artifact);
+    console.log(`✅ Guardado: ${phaseKey}/${type}`);
+}
+
+// Delete artifact
+async function deleteArtifact(type, index) {
+    if (!confirm('¿Estás seguro de eliminar este elemento?')) return;
+    
+    const phaseKey = getPhaseForType(type);
+    data[phaseKey][type].splice(index, 1);
+    
+    saveToLocalStorage(phaseKey, type);
+    
+    switchPhase(currentPhase);
+    console.log(`🗑️ Eliminado: ${phaseKey}/${type}`);
+}
+
+// Get folder name
+function getFolderName(phase) {
+    const folderMap = {
+        'planning': '1-Planning',
+        'design': '2-Design',
+        'coding': '3-Coding',
+        'testing': '4-Testing',
+        'team': '5-Team'
+    };
+    return folderMap[phase] || phase;
+}
+
+// Auto-cargar desde data/ o localStorage
+async function autoLoadFromDataFolder() {
+    console.log('🔄 Cargando datos automáticamente...');
+    
+    let totalLoaded = 0;
+    let fromLocalStorage = 0;
+    
+    for (const [phase, types] of Object.entries(data)) {
+        const folderName = getFolderName(phase);
+        
+        for (const type of Object.keys(types)) {
+            data[phase][type] = [];
+            let foundFiles = false;
+            
+            // Intentar varios formatos comunes (hasta 20 archivos)
+            for (let i = 1; i <= 20; i++) {
+                const patterns = [
+                    `data/${folderName}/${i}-${folderName}_${type}.json`,
+                    `data/${folderName}/${folderName}_${type}_${i}.json`,
+                    `data/${folderName}/${type}.json`, // Sin número
+                ];
+                
+                for (const filePath of patterns) {
+                    try {
+                        const response = await fetch(filePath, { 
+                            cache: 'no-cache',
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        
+                        if (response.ok) {
+                            const text = await response.text();
+                            if (text.trim()) {
+                                const content = JSON.parse(text);
+                                
+                                if (Array.isArray(content)) {
+                                    data[phase][type].push(...content);
+                                } else {
+                                    data[phase][type].push(content);
+                                }
+                                
+                                foundFiles = true;
+                                totalLoaded++;
+                                console.log(`✅ ${filePath} - ${Array.isArray(content) ? content.length : 1} items`);
+                            }
+                        }
+                    } catch (error) {
+                        // Continuar silenciosamente
+                    }
+                }
+            }
+            
+            if (foundFiles && data[phase][type].length > 0) {
+                try {
+                    localStorage.setItem(`xp_${phase}_${type}`, JSON.stringify(data[phase][type]));
+                } catch (e) {}
+                console.log(`📦 ${phase}/${type}: ${data[phase][type].length} items totales`);
+            } else {
+                // Intentar localStorage
+                try {
+                    const saved = localStorage.getItem(`xp_${phase}_${type}`);
+                    if (saved) {
+                        data[phase][type] = JSON.parse(saved);
+                        if (data[phase][type].length > 0) {
+                            console.log(`💾 ${phase}/${type}: ${data[phase][type].length} items desde localStorage`);
+                            fromLocalStorage++;
+                        }
+                    }
+                } catch (e) {
+                    data[phase][type] = [];
+                }
+            }
+        }
+    }
+    
+    if (totalLoaded > 0) {
+        console.log(`🎉 ${totalLoaded} archivos desde data/`);
+    }
+    if (fromLocalStorage > 0) {
+        console.log(`💾 ${fromLocalStorage} desde localStorage`);
+    }
+    
+    console.log('✅ Carga completada');
+}
+
+// ✨ FUNCIÓN SIMPLIFICADA: Cargar manualmente con botón
+async function manualLoadFromData() {
+    console.log('🔄 Cargando manualmente...');
+    console.log('📍 URL:', window.location.href);
+    
+    if (window.location.protocol === 'file:') {
+        alert('❌ Usa Live Server en VS Code');
+        return;
+    }
+    
+    let totalLoaded = 0;
+    let totalItems = 0;
+    
+    // Para cada fase y tipo
+    for (const [phase, types] of Object.entries(data)) {
+        const folderName = getFolderName(phase);
+        
+        for (const type of Object.keys(types)) {
+            data[phase][type] = [];
+            
+            // Buscar archivos con diferentes formatos
+            for (let i = 1; i <= 20; i++) {
+                // Lista de patrones a probar
+                const patterns = [
+                    `${i}-${folderName}_${type}.json`,
+                    `${folderName}_${type}_${i}.json`,
+                    `${i}-${folderName}_${type}_${i}.json`,
+                ];
+                
+                // Agregar patrones con fecha (solo el año actual y próximos 2)
+                const currentYear = new Date().getFullYear();
+                for (let year = currentYear - 1; year <= currentYear + 2; year++) {
+                    patterns.push(`${i}-${folderName}_${type}_${i}_${year}-01-14.json`);
+                    patterns.push(`${i}-${folderName}_${type}_${i}_${year}-01-15.json`);
+                }
+                
+                let found = false;
+                
+                for (const fileName of patterns) {
+                    const filePath = `data/${folderName}/${fileName}`;
+                    
+                    try {
+                        const response = await fetch(filePath, { 
+                            cache: 'no-cache',
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        
+                        if (response.ok) {
+                            const text = await response.text();
+                            if (text.trim()) {
+                                const content = JSON.parse(text);
+                                
+                                if (Array.isArray(content)) {
+                                    data[phase][type].push(...content);
+                                    totalItems += content.length;
+                                    console.log(`✅ ${filePath}: ${content.length} items`);
+                                } else {
+                                    data[phase][type].push(content);
+                                    totalItems++;
+                                    console.log(`✅ ${filePath}: 1 item`);
+                                }
+                                
+                                totalLoaded++;
+                                found = true;
+                                break;
+                            }
+                        }
+                    } catch (error) {
+                        // Continuar buscando
+                    }
+                }
+                
+                // Si no encontró nada en este número, continuar
+                if (!found && i > 3) break;
+            }
+            
+            if (data[phase][type].length > 0) {
+                saveToLocalStorage(phase, type);
+                console.log(`💾 Total ${phase}/${type}: ${data[phase][type].length} items`);
+            }
+        }
+    }
+    
+    switchPhase(currentPhase);
+    
+    if (totalLoaded > 0) {
+        alert(`✅ Cargados ${totalLoaded} archivos con ${totalItems} items`);
+        console.log(`🎉 Total: ${totalLoaded} archivos, ${totalItems} items`);
+    } else {
+        alert(`⚠️ No se encontraron archivos en data/\n\nFormatos soportados:\n• 1-1-Planning_stories.json\n• 1-3-Coding_unitTests_1_2026-01-14.json`);
+    }
+}
+
+// Local storage functions
+function saveToLocalStorage(phase, type) {
+    try {
+        localStorage.setItem(`xp_${phase}_${type}`, JSON.stringify(data[phase][type]));
+        console.log(`💾 Guardado en localStorage: ${phase}/${type}`);
+    } catch (e) {
+        console.warn('⚠️ No se pudo guardar en localStorage (modo incógnito?)');
+    }
+}
+
+// Descargar artefacto individual
+function downloadSingleArtifact(phase, type, index) {
+    try {
+        const artifact = data[phase][type][index];
+        
+        if (!artifact) {
+            console.error('Artefacto no encontrado');
+            return;
+        }
+        
+        const folderName = getFolderName(phase);
+        const timestamp = new Date().toISOString().slice(0, 10);
+        const fileName = `${folderName}_${type}_${index + 1}_${timestamp}.json`;
+        
+        const dataStr = JSON.stringify(artifact, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = fileName;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => URL.revokeObjectURL(link.href), 100);
+        
+        console.log(`💾 Descargado: ${fileName}`);
+        
+    } catch (error) {
+        console.error('❌ Error al descargar:', error);
+        alert('Error al descargar el archivo');
+    }
 }
 
 // Collect form data
@@ -614,9 +990,57 @@ function collectFormData(type) {
             goal: document.getElementById('input-goal')?.value
         }),
         crc: () => ({
-            className: document.getElementById('input-class-name')?.value,
-            responsibilities: document.getElementById('input-responsibilities')?.value,
-            collaborators: document.getElementById('input-collaborators')?.value
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        metaphor: () => ({
+            title: "Metáfora del Sistema",
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        spikes: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        minimal: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        refactoring: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        classDiagram: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        useCases: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        architecture: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        erDiagram: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
         }),
         teamMember: () => ({
             name: document.getElementById('input-name')?.value,
@@ -635,20 +1059,29 @@ function collectFormData(type) {
             description: document.getElementById('input-description')?.value,
             link: document.getElementById('input-link')?.value,
             date: new Date().toISOString()
+        }),
+        deployment: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        acceptanceTests: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        meetings: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
         })
-
     };
     
-    // Default collector for file-based artifacts
-    const defaultCollector = () => ({
-        title: document.getElementById('input-title')?.value,
-        description: document.getElementById('input-description')?.value,
-        file: document.getElementById('input-file')?.files[0],
-        date: new Date().toISOString()
-    });
-    
-    const collector = forms[type] || defaultCollector;
-    return collector();
+    const collector = forms[type];
+    return collector ? collector() : null;
 }
 
 // Get phase for type
@@ -668,7 +1101,6 @@ function getContainerId(type) {
         releases: 'releases-container',
         velocity: 'velocity-container',
         iterations: 'iterations-container',
-        rotations: 'rotations-container',
         meetings: 'meetings-container',
         metaphor: 'metaphor-container',
         crc: 'crc-container',
@@ -725,21 +1157,32 @@ function renderCard(type, item, index) {
                 </div>
             </div>
         `,
+        releases: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-id">${item.version}</div>
+                        <div class="card-date">${new Date(item.date).toLocaleDateString('es-CO')}</div>
+                    </div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
         crc: (item) => `
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">${item.className}</div>
+                    <div class="card-title">${item.description?.substring(0, 50)}...</div>
                 </div>
-                <table class="crc-table">
-                    <tr>
-                        <th>Responsabilidades</th>
-                        <th>Colaboradores</th>
-                    </tr>
-                    <tr>
-                        <td>${item.responsibilities?.replace(/\n/g, '<br>')}</td>
-                        <td>${item.collaborators?.replace(/\n/g, '<br>')}</td>
-                    </tr>
-                </table>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
                 <div class="card-actions">
                     <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
                         <i class="fas fa-download"></i>
@@ -783,99 +1226,164 @@ function renderCard(type, item, index) {
                     </button>
                 </div>
             </div>
-        `
+        `,
+        metaphor: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.description?.substring(0, 50)}...</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        spikes: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        minimal: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        refactoring: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        classDiagram: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        useCases: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        architecture: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        erDiagram: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        // ...existing code...
     };
     
-    // Default card renderer
     const defaultRenderer = (item) => `
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title">${item.title || 'Sin título'}</div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">${item.title || 'Sin título'}</div>
+            </div>
+            <div class="card-content">${item.description || ''}</div>
+            ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Abrir enlace</a></div>` : ''}
+            <div class="card-actions">
+                <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         </div>
-
-        <div class="card-content">${item.description || ''}</div>
-
-        ${
-            item.link
-            ? `<div class="card-content">
-                    <i class="fas fa-link"></i>
-                    <a href="${item.link}" target="_blank">Abrir enlace</a>
-               </div>`
-            : ''
-        }
-
-        <div class="card-actions">
-            <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
-                <i class="fas fa-download"></i>
-            </button>
-            <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    </div>
-`;
+    `;
     
     const renderer = cardRenderers[type] || defaultRenderer;
     return renderer(item);
-}
-
-// Delete artifact
-function deleteArtifact(type, index) {
-    if (!confirm('¿Estás seguro de eliminar este elemento?')) return;
-    
-    const phaseKey = getPhaseForType(type);
-    data[phaseKey][type].splice(index, 1);
-    saveToLocalStorage(phaseKey, type);
-    switchPhase(currentPhase);
-}
-
-// Local storage functions
-function saveToLocalStorage(phase, type) {
-    localStorage.setItem(`xp_${phase}_${type}`, JSON.stringify(data[phase][type]));
-}
-
-function loadAllData() {
-    for (const [phase, types] of Object.entries(data)) {
-        for (const type of Object.keys(types)) {
-            const saved = localStorage.getItem(`xp_${phase}_${type}`);
-            if (saved) {
-                data[phase][type] = JSON.parse(saved);
-            }
-        }
-    }
-}
-
-// Download functions
-function downloadArtifact(phase, type, artifact) {
-    const folderMap = {
-        planning: '1-Planning',
-        design: '2-Design',
-        coding: '3-Coding',
-        testing: '4-Testing',
-        team: '5-Team'
-    };
-    
-    const filename = `${folderMap[phase]}/${type}_${Date.now()}.json`;
-    const dataStr = JSON.stringify(artifact, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = filename;
-    link.click();
-}
-
-function downloadSingleArtifact(phase, type, index) {
-    const artifact = data[phase][type][index];
-    downloadArtifact(phase, type, artifact);
-}
-
-function exportAllData() {
-    const dataStr = JSON.stringify(data, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = `xp_roadmap_backup_${Date.now()}.json`;
-    link.click();
 }
