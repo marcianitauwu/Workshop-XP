@@ -109,8 +109,27 @@ public class SQLiteDataHelper {
 
     private void executeDML() {
         try (Statement stmt = connection.createStatement()) {
+            // Usuario patmic con contraseña 123
             stmt.execute("INSERT OR IGNORE INTO USUARIO (username, password, rol) VALUES ('patmic', '123', 'KGD')");
             stmt.execute("INSERT OR IGNORE INTO CONTROL_LOGIN (id_usuario, intentos_restantes, bloqueado) SELECT id_usuario, 3, 0 FROM USUARIO WHERE username = 'patmic'");
+            
+            // Usuarios adicionales con contraseña admin
+            stmt.execute("INSERT OR IGNORE INTO USUARIO (username, password, rol) VALUES ('Paul', 'admin', 'KGD')");
+            stmt.execute("INSERT OR IGNORE INTO CONTROL_LOGIN (id_usuario, intentos_restantes, bloqueado) SELECT id_usuario, 3, 0 FROM USUARIO WHERE username = 'Paul'");
+            
+            stmt.execute("INSERT OR IGNORE INTO USUARIO (username, password, rol) VALUES ('Samira', 'admin', 'KGD')");
+            stmt.execute("INSERT OR IGNORE INTO CONTROL_LOGIN (id_usuario, intentos_restantes, bloqueado) SELECT id_usuario, 3, 0 FROM USUARIO WHERE username = 'Samira'");
+            
+            stmt.execute("INSERT OR IGNORE INTO USUARIO (username, password, rol) VALUES ('Sebas', 'admin', 'KGD')");
+            stmt.execute("INSERT OR IGNORE INTO CONTROL_LOGIN (id_usuario, intentos_restantes, bloqueado) SELECT id_usuario, 3, 0 FROM USUARIO WHERE username = 'Sebas'");
+            
+            stmt.execute("INSERT OR IGNORE INTO USUARIO (username, password, rol) VALUES ('Salma', 'admin', 'KGD')");
+            stmt.execute("INSERT OR IGNORE INTO CONTROL_LOGIN (id_usuario, intentos_restantes, bloqueado) SELECT id_usuario, 3, 0 FROM USUARIO WHERE username = 'Salma'");
+            
+            stmt.execute("INSERT OR IGNORE INTO USUARIO (username, password, rol) VALUES ('Danna', 'admin', 'KGD')");
+            stmt.execute("INSERT OR IGNORE INTO CONTROL_LOGIN (id_usuario, intentos_restantes, bloqueado) SELECT id_usuario, 3, 0 FROM USUARIO WHERE username = 'Danna'");
+            
+            // Alimentos iniciales
             stmt.execute("INSERT OR IGNORE INTO ALIMENTO (nombre, tipo, disponibilidad) VALUES ('Néctar Premium', 'NECTAR', 100)");
             stmt.execute("INSERT OR IGNORE INTO ALIMENTO (nombre, tipo, disponibilidad) VALUES ('Carne Fresca', 'CARNIVORO', 50)");
             System.out.println("[BD] Datos iniciales insertados");
