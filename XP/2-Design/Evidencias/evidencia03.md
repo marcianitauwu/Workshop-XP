@@ -1,1 +1,0 @@
-Evidencia 03 de la etapa 2 - Design - Diagrama Entidad-Relación: [https://1drv.ms/v/c/4c513775861c1300/IQCawCM7A0X-RoKzlzuie5snAbsTTMwRL78Lj9Neiz2-oUs?e=yuPwRZ](https://1drv.ms/v/c/4c513775861c1300/IQCawCM7A0X-RoKzlzuie5snAbsTTMwRL78Lj9Neiz2-oUs?e=yuPwRZ) 
