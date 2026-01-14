@@ -1,0 +1,23 @@
+[
+  {
+    "version": "v0.00",
+    "date": "2026-01-09",
+    "description": "Planificación + MVP"
+  },
+    {
+    "version": "v0.1",
+    "date": "2026-01-10",
+    "description": "Diseño tangible + prototipos"
+  },
+
+    {
+    "version": "v0.2",
+    "date": "2026-01-11",
+    "description": "Coding + autómata + CSV"
+  },
+    {
+    "version": "v1.00",
+    "date": "2026-01-09",
+    "description": "Testing + evidencias + demo"
+  }
+]
