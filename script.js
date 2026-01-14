@@ -1422,6 +1422,25 @@ function renderCard(type, item, index) {
                 </div>
             </div>
         `,
+        acceptanceTests: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                    ${item.responsible ? `<span class="badge Media">${item.responsible}</span>` : ''}
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                ${item.date ? `<div class="card-date"><i class="fas fa-calendar"></i> ${new Date(item.date).toLocaleDateString('es-CO')}</div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
         // ...existing code...
     };
     

@@ -1,0 +1,8 @@
+[
+  {
+    "title": "Reciclaje",
+    "description": "Reciclaje y refactoring del código AntCyberDrone: Optimización de patrones DFA, mejora de abstracción en jerarquía Hormiga, consolidación de servicios DAO, y limpieza de redundancias en capas de negocio.",
+    "link": "https://github.com/marcianitauwu/Workshop-XP/blob/main/XP/2-Design/Reciclaje/Reciclaje.md",
+    "date": "2026-01-14"
+  }
+]

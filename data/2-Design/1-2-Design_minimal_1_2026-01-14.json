@@ -1,0 +1,8 @@
+[
+  {
+    "title": "Funcionalidad Mínima",
+    "description": "Funcionalidad mínima del sistema AntCyberDrone: Cargar CSV, procesar con autómata DFA, crear hormigas en hormiguero virtual y gestionar armas. Características esenciales para MVP.",
+    "link": "https://github.com/marcianitauwu/Workshop-XP/blob/main/XP/2-Design/Funcionalidad%20minima/Funcionalidad_Minima.md",
+    "date": "2026-01-14"
+  }
+]
