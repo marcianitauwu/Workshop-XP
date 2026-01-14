@@ -110,13 +110,13 @@ Alimento <|-- Nectar
 Alimento <|-- Carnivoro
 
 note right of HLarva
-  PDF: TIPO_HORMIGA nace como HLarva.
+  TIPO_HORMIGA nace como HLarva.
   HLarva vive comiendo Néctar.
   Si come ALIMENTO se transforma a su tipo.
 end note
 
 note right of HSoldado
-  PDF: HSoldado vive si come Carnívoro.
+  HSoldado vive si come Carnívoro.
 end note
 
 class HormigueroVirtual {

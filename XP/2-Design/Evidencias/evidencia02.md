@@ -1,0 +1,1 @@
+Evidencia 02 de la etapa 2 - Design - Diagrama de Clases: [https://1drv.ms/v/c/4c513775861c1300/IQACTnuHImS7TokIh1d-4OzhAd24jvH6ycmttk8hxWJ1MLo?e=cAwTti](https://1drv.ms/v/c/4c513775861c1300/IQACTnuHImS7TokIh1d-4OzhAd24jvH6ycmttk8hxWJ1MLo?e=cAwTti) 

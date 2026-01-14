@@ -1,0 +1,1 @@
+Evidencia 04 de la etapa 2 - Design - Diagrama de Arquitectura: [https://1drv.ms/v/c/4c513775861c1300/IQAEmvAmczpdR6jgCIosK_WzAcmF-yWqIJoRHfKpWZBjc54?e=bgOCdu](https://1drv.ms/v/c/4c513775861c1300/IQAEmvAmczpdR6jgCIosK_WzAcmF-yWqIJoRHfKpWZBjc54?e=bgOCdu) 
