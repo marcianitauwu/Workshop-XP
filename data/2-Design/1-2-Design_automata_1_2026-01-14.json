@@ -1,7 +1,7 @@
 [
   {
     "description": "Autómata Finito Determinista (AFD) que valida los patrones: ab* (a seguido de cero o más b), a+ (una o más a), y abcdt+ (abcd seguido de una o más t). Documento incluye diagrama de estados, tabla de transiciones y gramática formal.",
-    "link": "https://github.com/marcianitauwu/Workshop-XP/blob/main/XP/2-Design/Automata/AutomataFinitoDeterminista.png",
+    "link": "https://github.com/marcianitauwu/Workshop-XP/blob/main/XP/2-Design/Automata/Automata.jpeg",
     "date": "2026-01-14"
   }
 ]
