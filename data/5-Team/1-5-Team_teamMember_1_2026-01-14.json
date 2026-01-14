@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Salma Morales",
+    "cedula": "1750712240",
+    "role": "Coach",
+    "email": "salma.morales@epn.edu.ec"
+  },
+  {
+    "name": "Danna Morales",
+    "cedula": "1750712265",
+    "role": "Manager",
+    "email": "danna.morales@epn.edu.ec"
+  },
+  {
+    "name": "Samira Arízaga",
+    "cedula": "1724660335",
+    "role": "Developer",
+    "email": "samira.arizaga@epn.edu.ec"
+  },
+  {
+    "name": "Paul Dávila",
+    "cedula": "1003765136",
+    "role": "Developer",
+    "email": "paul.davila@epn.edu.ec"
+  },
+  {
+    "name": "Sebastián Sarasti",
+    "cedula": "1722217799",
+    "role": "Tester",
+    "email": "sebastian.sarasti@epn.edu.ec"
+  }
+]

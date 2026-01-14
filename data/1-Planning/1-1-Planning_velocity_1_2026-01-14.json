@@ -3,5 +3,21 @@
     "iteration": "Sprint 1",
     "planned": 13,
     "completed": 13
+  },
+    {
+    "iteration": "Sprint 2",
+    "planned": 13,
+    "completed": 13
+  },
+    {
+    "iteration": "Sprint 3",
+    "planned": 13,
+    "completed": 13
+  },
+    {
+    "iteration": "Sprint 4",
+    "planned": 8,
+    "completed": 8
   }
+
 ]

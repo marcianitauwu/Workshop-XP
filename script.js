@@ -9,8 +9,7 @@ const data = {
         stories: [],
         releases: [],
         velocity: [],
-        iterations: [],
-        meetings: []
+        iterations: []
     },
     design: {
         metaphor: [],
@@ -21,7 +20,8 @@ const data = {
         classDiagram: [],
         useCases: [],
         architecture: [],
-        erDiagram: []
+        erDiagram: [],
+        automata: []
     },
     coding: {
         unitTests: [],
@@ -154,10 +154,20 @@ function renderTimeline() {
     
     let html = '';
     
-    phases.forEach(p => {
+    phases.forEach((p, index) => {
         const phaseData = data[p.phase];
         const totalItems = Object.values(phaseData).reduce((sum, arr) => sum + arr.length, 0);
-        const progress = totalItems > 0 ? Math.min(100, (totalItems / 10) * 100) : 0;
+        
+        // Cada fase tiene un máximo esperado
+        const maxPerPhase = {
+            'planning': 5,
+            'design': 9,
+            'coding': 2,
+            'testing': 2
+        };
+        
+        const max = maxPerPhase[p.phase] || 5;
+        const progress = totalItems > 0 ? Math.min(100, (totalItems / max) * 100) : 0;
         
         html += `
             <div class="timeline-item">
@@ -366,6 +376,7 @@ function getModalTitle(type) {
         useCases: 'Casos de Uso',
         architecture: 'Arquitectura',
         erDiagram: 'Diagrama Entidad-Relación',
+        automata: 'Autómata Finito Determinista',
         unitTests: 'Prueba Unitaria',
         pairProgramming: 'Sesión de Programación en Parejas',
         deployment: 'Implantación',
@@ -447,7 +458,15 @@ function getModalForm(type) {
             </div>
             <div class="form-group">
                 <label>Objetivo</label>
-                <textarea id="input-goal"></textarea>
+                <textarea id="input-goal" placeholder="Objetivo de la iteración..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Historias (separadas por coma)</label>
+                <input type="text" id="input-stories" placeholder="US-001, US-002, US-003">
+            </div>
+            <div class="form-group">
+                <label>Story Points Totales</label>
+                <input type="number" id="input-points" placeholder="13" min="0">
             </div>
         `,
         crc: `
@@ -514,54 +533,48 @@ function getModalForm(type) {
         `,
         classDiagram: `
             <div class="form-group">
-                <label>Título</label>
-                <input type="text" id="input-title" placeholder="Diagrama de Clases v1.0..." required>
-            </div>
-            <div class="form-group">
                 <label>Descripción</label>
-                <textarea id="input-description" placeholder="Describa el diagrama..."></textarea>
+                <textarea id="input-description" placeholder="Describa el diagrama de clases..." required></textarea>
             </div>
             <div class="form-group">
-                <label>Link (Imagen, Documento, Draw, Lucidchart, etc.)</label>
+                <label>Link (Imagen, Documento, Draw.io, Lucidchart, etc.)</label>
                 <input type="url" id="input-link" placeholder="https://..." required>
             </div>
         `,
         useCases: `
             <div class="form-group">
-                <label>Título</label>
-                <input type="text" id="input-title" placeholder="Casos de Uso..." required>
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa los casos de uso del sistema..." required></textarea>
             </div>
             <div class="form-group">
+                <label>Link (Documento, Imagen, Lucidchart, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        architecture: `
+            <div class="form-group">
                 <label>Descripción</label>
-                <textarea id="input-description" placeholder="Describa los casos de uso..."></textarea>
+                <textarea id="input-description" placeholder="Describa la arquitectura del sistema..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link (Imagen, Documento, Draw.io, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://..." required>
+            </div>
+        `,
+        erDiagram: `
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Describa el modelo de datos..." required></textarea>
             </div>
             <div class="form-group">
                 <label>Link (Imagen, Documento, Lucidchart, etc.)</label>
                 <input type="url" id="input-link" placeholder="https://..." required>
             </div>
         `,
-        architecture: `
-            <div class="form-group">
-                <label>Título</label>
-                <input type="text" id="input-title" placeholder="Arquitectura del Sistema..." required>
-            </div>
+        automata: `
             <div class="form-group">
                 <label>Descripción</label>
-                <textarea id="input-description" placeholder="Describa la arquitectura..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>Link (Imagen, Documento, Draw, etc.)</label>
-                <input type="url" id="input-link" placeholder="https://..." required>
-            </div>
-        `,
-        erDiagram: `
-            <div class="form-group">
-                <label>Título</label>
-                <input type="text" id="input-title" placeholder="Diagrama Entidad-Relación..." required>
-            </div>
-            <div class="form-group">
-                <label>Descripción</label>
-                <textarea id="input-description" placeholder="Describa el modelo de datos..."></textarea>
+                <textarea id="input-description" placeholder="Describa el autómata finito determinista..." required></textarea>
             </div>
             <div class="form-group">
                 <label>Link (Imagen, Documento, Lucidchart, etc.)</label>
@@ -645,20 +658,6 @@ function getModalForm(type) {
             </div>
             <div class="form-group">
                 <label>Link (Documento, GitHub, etc.)</label>
-                <input type="url" id="input-link" placeholder="https://..." required>
-            </div>
-        `,
-        meetings: `
-            <div class="form-group">
-                <label>Nombre</label>
-                <input type="text" id="input-title" placeholder="Reunión..." required>
-            </div>
-            <div class="form-group">
-                <label>Descripción</label>
-                <textarea id="input-description" placeholder="Describa la reunión..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>Link (Documento, Acta, etc.)</label>
                 <input type="url" id="input-link" placeholder="https://..." required>
             </div>
         `
@@ -875,6 +874,7 @@ async function manualLoadFromData() {
                             if (text.trim()) {
                                 const content = JSON.parse(text);
                                 
+
                                 if (Array.isArray(content)) {
                                     data[phase][type].push(...content);
                                     totalItems += content.length;
@@ -983,12 +983,19 @@ function collectFormData(type) {
             planned: parseInt(document.getElementById('input-planned')?.value) || 0,
             completed: parseInt(document.getElementById('input-completed')?.value) || 0
         }),
-        iterations: () => ({
-            name: document.getElementById('input-name')?.value,
-            startDate: document.getElementById('input-start-date')?.value,
-            endDate: document.getElementById('input-end-date')?.value,
-            goal: document.getElementById('input-goal')?.value
-        }),
+        iterations: () => {
+            const storiesInput = document.getElementById('input-stories')?.value || '';
+            const stories = storiesInput ? storiesInput.split(',').map(s => s.trim()).filter(s => s) : [];
+            
+            return {
+                name: document.getElementById('input-name')?.value,
+                startDate: document.getElementById('input-start-date')?.value,
+                endDate: document.getElementById('input-end-date')?.value,
+                goal: document.getElementById('input-goal')?.value,
+                stories: stories,
+                points: parseInt(document.getElementById('input-points')?.value) || 0
+            };
+        },
         crc: () => ({
             description: document.getElementById('input-description')?.value,
             link: document.getElementById('input-link')?.value,
@@ -1019,25 +1026,26 @@ function collectFormData(type) {
             date: new Date().toISOString()
         }),
         classDiagram: () => ({
-            title: document.getElementById('input-title')?.value,
             description: document.getElementById('input-description')?.value,
             link: document.getElementById('input-link')?.value,
             date: new Date().toISOString()
         }),
         useCases: () => ({
-            title: document.getElementById('input-title')?.value,
             description: document.getElementById('input-description')?.value,
             link: document.getElementById('input-link')?.value,
             date: new Date().toISOString()
         }),
         architecture: () => ({
-            title: document.getElementById('input-title')?.value,
             description: document.getElementById('input-description')?.value,
             link: document.getElementById('input-link')?.value,
             date: new Date().toISOString()
         }),
         erDiagram: () => ({
-            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        automata: () => ({
             description: document.getElementById('input-description')?.value,
             link: document.getElementById('input-link')?.value,
             date: new Date().toISOString()
@@ -1067,12 +1075,6 @@ function collectFormData(type) {
             date: new Date().toISOString()
         }),
         acceptanceTests: () => ({
-            title: document.getElementById('input-title')?.value,
-            description: document.getElementById('input-description')?.value,
-            link: document.getElementById('input-link')?.value,
-            date: new Date().toISOString()
-        }),
-        meetings: () => ({
             title: document.getElementById('input-title')?.value,
             description: document.getElementById('input-description')?.value,
             link: document.getElementById('input-link')?.value,
@@ -1298,10 +1300,10 @@ function renderCard(type, item, index) {
         classDiagram: (item) => `
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">${item.title}</div>
+                    <div class="card-title">${item.description?.substring(0, 50) || 'Diagrama de Clases'}...</div>
                 </div>
-                <div class="card-content">${item.description}</div>
-                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-content">${item.description || ''}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver diagrama</a></div>` : ''}
                 <div class="card-actions">
                     <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
                         <i class="fas fa-download"></i>
@@ -1315,9 +1317,9 @@ function renderCard(type, item, index) {
         useCases: (item) => `
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">${item.title}</div>
+                    <div class="card-title">${item.description?.substring(0, 50) || item.title?.substring(0, 50) || 'Casos de Uso'}...</div>
                 </div>
-                <div class="card-content">${item.description}</div>
+                <div class="card-content">${item.description || ''}</div>
                 ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
                 <div class="card-actions">
                     <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
@@ -1332,10 +1334,10 @@ function renderCard(type, item, index) {
         architecture: (item) => `
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">${item.title}</div>
+                    <div class="card-title">${item.description?.substring(0, 50) || 'Arquitectura'}...</div>
                 </div>
-                <div class="card-content">${item.description}</div>
-                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-content">${item.description || ''}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver diagrama</a></div>` : ''}
                 <div class="card-actions">
                     <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
                         <i class="fas fa-download"></i>
@@ -1349,15 +1351,72 @@ function renderCard(type, item, index) {
         erDiagram: (item) => `
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">${item.title}</div>
+                    <div class="card-title">${item.description?.substring(0, 50) || 'Diagrama ER'}...</div>
                 </div>
-                <div class="card-content">${item.description}</div>
-                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-content">${item.description || ''}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver diagrama</a></div>` : ''}
                 <div class="card-actions">
                     <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
                         <i class="fas fa-download"></i>
                     </button>
                     <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        automata: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.description?.substring(0, 50) || 'Autómata DFA'}...</div>
+                </div>
+                <div class="card-content">${item.description || ''}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver autómata</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        velocity: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-id">${item.iteration}</div>
+                    </div>
+                </div>
+                <div class="card-content"><strong>Planificados:</strong> ${item.planned} pts</div>
+                <div class="card-content"><strong>Completados:</strong> ${item.completed} pts</div>
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        iterations: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-id">${item.name}</div>
+                        <div class="card-date">${new Date(item.startDate).toLocaleDateString('es-CO')} - ${new Date(item.endDate).toLocaleDateString('es-CO')}</div>
+                    </div>
+                </div>
+                <div class="card-content"><strong>Objetivo:</strong> ${item.goal || 'Sin objetivo definido'}</div>
+                ${item.stories && item.stories.length > 0 ? `<div class="card-content"><strong>Historias:</strong> ${item.stories.join(', ')}</div>` : ''}
+                ${item.points ? `<div class="card-content"><strong>Story Points:</strong> ${item.points}</div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', 'iterations', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('iterations', ${index})">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>

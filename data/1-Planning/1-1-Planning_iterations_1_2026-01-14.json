@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Sprint 1",
+    "startDate": "2025-12-27",
+    "endDate": "2026-01-09",
+    "goal": "Implementar autenticación con control de intentos y cargar CSV con visualización de loading por línea.",
+    "stories": ["US-001", "US-002"],
+    "points": 13
+  },
+  {
+    "name": "Sprint 2",
+    "startDate": "2026-01-09",
+    "endDate": "2026-01-10",
+    "goal": "Diseñar e implementar el autómata (AFD) según dígitos de cédula y modelar dominio de Hormiga con transformaciones.",
+    "stories": ["US-003", "US-004"],
+    "points": 13
+  },
+  {
+    "name": "Sprint 3",
+    "startDate": "2026-01-10",
+    "endDate": "2026-01-11",
+    "goal": "Evaluar arsenal con autómata DFA y crear pantallas del hormiguero virtual con gestión de hormigas.",
+    "stories": ["US-005", "US-006"],
+    "points": 13
+  },
+  {
+    "name": "Sprint 4",
+    "startDate": "2026-01-11",
+    "endDate": "2026-01-12",
+    "goal": "Completar pruebas unitarias e integración, y generar evidencias en video por cada fase XP.",
+    "stories": ["US-007", "US-008"],
+    "points": 8
+  }
+]
