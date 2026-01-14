@@ -1,5 +1,33 @@
 # Roadmap XP — AntCiberDron (Workshop)
 
+## 🚀 Cómo ejecutarlo
+
+### Opción 1: VS Code Live Server (Recomendado) ⭐
+1. Abre VS Code
+2. Instala la extensión "Live Server"
+3. Abre la carpeta `Workshop-XP`
+4. Click derecho en `index.html` → **Open with Live Server**
+5. ¡Listo! Se abre en http://localhost:5500
+
+### Opción 2: Python
+```bash
+cd Workshop-XP
+python -m http.server 8000
+```
+Abre: http://localhost:8000
+
+## 💾 Sistema de Guardado Automático
+
+✅ **Todo se guarda en localStorage automáticamente**  
+✅ **No necesitas hacer nada**, solo usar el dashboard  
+✅ **Los datos persisten** entre sesiones del navegador  
+
+### 📂 Estructura de Carpetas (Opcional)
+
+Si quieres tener los archivos JSON físicamente:
+````markdown
+# Roadmap XP — AntCiberDron (Workshop)
+
 Este proyecto es un dashboard **sin framework** (HTML/CSS/JS) para cumplir el workshop de XP:
 - Fases XP (Planificación, Diseño, Desarrollo, Pruebas) con prácticas, rol, pair y evidencia.
 - Historias de Usuario con iteraciones (4) y story points.
@@ -35,3 +63,4 @@ Carpetas:
 - `XP/evidencias/testing`
 
 En el dashboard (Fases XP) pega el link del video (Drive/YouTube) en cada práctica.
+````
