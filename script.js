@@ -25,10 +25,8 @@ const data = {
         erDiagram: []
     },
     coding: {
-        clientAvailability: [],
         unitTests: [],
-        pairProgramming: [],
-        integration: []
+        pairProgramming: []
     },
     testing: {
         deployment: [],
@@ -370,10 +368,8 @@ function getModalTitle(type) {
         useCases: 'Casos de Uso',
         architecture: 'Arquitectura',
         erDiagram: 'Diagrama Entidad-Relación',
-        clientAvailability: 'Disponibilidad del Cliente',
         unitTests: 'Prueba Unitaria',
         pairProgramming: 'Sesión de Programación en Parejas',
-        integration: 'Integración Continua',
         deployment: 'Implantación',
         acceptanceTests: 'Prueba de Aceptación',
         teamMember: 'Miembro del Equipo'
@@ -493,7 +489,36 @@ function getModalForm(type) {
                 <label>Email</label>
                 <input type="email" id="input-email" placeholder="correo@ejemplo.com" required>
             </div>
+        `,
+        unitTests: `
+            <div class="form-group">
+                <label>Nombre de la Prueba</label>
+                <input type="text" id="input-title" placeholder="Test Login" required>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="input-description" placeholder="Prueba unitaria del login"></textarea>
+             </div>
+            <div class="form-group">
+                <label>Link (GitHub, GitLab, Drive, etc.)</label>
+                <input type="url" id="input-link" placeholder="https://github.com/..." required>
+            </div>
+            `,
+        pairProgramming: `
+            <div class="form-group">
+                <label>Sesión</label>
+                <input type="text" id="input-title" placeholder="Pair Programming Sprint 1" required>
+            </div>
+            <div class="form-group">
+             <label>Descripción</label>
+                <textarea id="input-description" placeholder="Qué se trabajó en la sesión"></textarea>
+             </div>
+        <div class="form-group">
+        <label>Link (Repositorio / Documento)</label>
+        <input type="url" id="input-link" placeholder="https://..." required>
+        </div>
         `
+
     };
     
     // Default form for file uploads
@@ -525,6 +550,27 @@ function saveArtifact() {
         return;
     }
     
+    // Validar que todos los campos requeridos estén presentes
+    const requiredFields = ['title', 'description'];
+    if (type === 'unitTests' || type === 'pairProgramming') {
+        requiredFields.push('link');
+    }
+    
+    for (const field of requiredFields) {
+        if (!artifact[field]) {
+            alert('Por favor completa todos los campos requeridos');
+            return;
+        }
+    }
+    
+    // Validar formato de enlace para tipos que lo requieren
+    if ((type === 'unitTests' || type === 'pairProgramming') && artifact.link) {
+        if (!artifact.link.startsWith('http://') && !artifact.link.startsWith('https://')) {
+            alert('El enlace debe comenzar con http:// o https://');
+            return;
+        }
+    }
+    
     const phaseKey = getPhaseForType(type);
     
     if (editIndex >= 0) {
@@ -532,11 +578,11 @@ function saveArtifact() {
     } else {
         data[phaseKey][type].push(artifact);
     }
-    
+
     saveToLocalStorage(phaseKey, type);
-    downloadArtifact(phaseKey, type, artifact);
-    switchPhase(currentPhase);
     closeModal();
+    switchPhase(currentPhase);
+    downloadArtifact(phaseKey, type, artifact);
 }
 
 // Collect form data
@@ -577,7 +623,20 @@ function collectFormData(type) {
             cedula: document.getElementById('input-cedula')?.value,
             role: document.getElementById('input-role')?.value,
             email: document.getElementById('input-email')?.value
+        }),
+        unitTests: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
+        }),
+        pairProgramming: () => ({
+            title: document.getElementById('input-title')?.value,
+            description: document.getElementById('input-description')?.value,
+            link: document.getElementById('input-link')?.value,
+            date: new Date().toISOString()
         })
+
     };
     
     // Default collector for file-based artifacts
@@ -602,12 +661,40 @@ function getPhaseForType(type) {
     return 'planning';
 }
 
+// Get container ID for type
+function getContainerId(type) {
+    const containerMap = {
+        stories: 'stories-container',
+        releases: 'releases-container',
+        velocity: 'velocity-container',
+        iterations: 'iterations-container',
+        rotations: 'rotations-container',
+        meetings: 'meetings-container',
+        metaphor: 'metaphor-container',
+        crc: 'crc-container',
+        spikes: 'spikes-container',
+        minimal: 'minimal-container',
+        refactoring: 'refactoring-container',
+        classDiagram: 'classDiagram-container',
+        useCases: 'useCases-container',
+        architecture: 'architecture-container',
+        erDiagram: 'erDiagram-container',
+        unitTests: 'unit-tests-container',
+        pairProgramming: 'pair-programming-container',
+        deployment: 'deployment-container',
+        acceptanceTests: 'acceptanceTests-container',
+        teamMember: 'team-members-container'
+    };
+    return containerMap[type] || `${type}-container`;
+}
+
 // Render phase
 function renderPhase(phase) {
     const phaseData = data[phase];
     
     for (const [type, items] of Object.entries(phaseData)) {
-        const container = document.getElementById(`${type}-container`);
+        const containerId = getContainerId(type);
+        const container = document.getElementById(containerId);
         if (container) {
             container.innerHTML = items.map((item, index) => renderCard(type, item, index)).join('');
         }
@@ -662,27 +749,71 @@ function renderCard(type, item, index) {
                     </button>
                 </div>
             </div>
+        `,
+        unitTests: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `,
+        pairProgramming: (item) => `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">${item.title}</div>
+                </div>
+                <div class="card-content">${item.description}</div>
+                ${item.link ? `<div class="card-content"><i class="fas fa-link"></i> <a href="${item.link}" target="_blank">Ver enlace</a></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
         `
     };
     
     // Default card renderer
     const defaultRenderer = (item) => `
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">${item.title || item.name || item.version || item.className || 'Sin título'}</div>
-            </div>
-            <div class="card-content">${item.description || item.goal || ''}</div>
-            ${item.file ? `<div class="card-content"><i class="fas fa-file"></i> Archivo adjunto</div>` : ''}
-            <div class="card-actions">
-                <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
-                    <i class="fas fa-download"></i>
-                </button>
-                <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">${item.title || 'Sin título'}</div>
         </div>
-    `;
+
+        <div class="card-content">${item.description || ''}</div>
+
+        ${
+            item.link
+            ? `<div class="card-content">
+                    <i class="fas fa-link"></i>
+                    <a href="${item.link}" target="_blank">Abrir enlace</a>
+               </div>`
+            : ''
+        }
+
+        <div class="card-actions">
+            <button class="icon-btn download" onclick="downloadSingleArtifact('${currentPhase}', '${type}', ${index})">
+                <i class="fas fa-download"></i>
+            </button>
+            <button class="icon-btn delete" onclick="deleteArtifact('${type}', ${index})">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </div>
+`;
     
     const renderer = cardRenderers[type] || defaultRenderer;
     return renderer(item);
