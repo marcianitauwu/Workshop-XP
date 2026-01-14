@@ -3,14 +3,348 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Roadmap XP — AntCiberDron</title>
-  <link rel="stylesheet" href="./css/styles.css" />
+  <title>XP Roadmap Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="app"></div>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-rocket"></i> XP Roadmap Dashboard
+        </div>
+        
+        <div class="nav-menu">
+            <button class="nav-link-direct" id="btn-timeline" onclick="switchPhase('timeline')">
+                <i class="fas fa-stream"></i> Timeline
+            </button>
+            <button class="nav-link-direct" id="btn-metrics" onclick="switchPhase('metrics')">
+                <i class="fas fa-chart-line"></i> Métricas
+            </button>
+            <button class="nav-link-direct active" id="btn-planning" onclick="switchPhase('planning')">
+                <i class="fas fa-calendar-alt"></i> Planning
+            </button>
+            <button class="nav-link-direct" id="btn-design" onclick="switchPhase('design')">
+                <i class="fas fa-pencil-ruler"></i> Design
+            </button>
+            <button class="nav-link-direct" id="btn-coding" onclick="switchPhase('coding')">
+                <i class="fas fa-code"></i> Coding
+            </button>
+            <button class="nav-link-direct" id="btn-testing" onclick="switchPhase('testing')">
+                <i class="fas fa-check-circle"></i> Testing
+            </button>
+            <button class="nav-link-direct" id="btn-team" onclick="switchPhase('team')">
+                <i class="fas fa-users-cog"></i> Equipo
+            </button>
+        </div>
 
-  <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+        <div class="nav-actions">
+            <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+            <button class="backup-btn" onclick="exportAllData()">
+                <i class="fas fa-download"></i> Exportar
+            </button>
+        </div>
+    </nav>
 
-  <script type="module" src="./js/app.js"></script>
+    <!-- ACTION BAR -->
+    <div class="action-bar">
+        <div class="phase-title">
+            <h2 id="phase-heading">Planning</h2>
+            <p id="phase-sub">Gestión de historias de usuario y planificación del proyecto</p>
+        </div>
+        <button class="btn-primary" id="main-action-btn" onclick="openModal()">
+            <i class="fas fa-plus"></i> <span id="btn-add-text">Agregar</span>
+        </button>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- TIMELINE VIEW -->
+        <div id="view-timeline" class="phase-view" style="display:none;">
+            <div class="timeline-container">
+                <div class="timeline-header-section">
+                    <h2><i class="fas fa-stream"></i> Línea de Tiempo del Proyecto</h2>
+                    <p>Visualiza el progreso de todas las fases de XP</p>
+                </div>
+                <div class="timeline-wrapper" id="timeline-wrapper"></div>
+            </div>
+        </div>
+
+        <!-- METRICS VIEW -->
+        <div id="view-metrics" class="phase-view" style="display:none;">
+            <div class="metrics-container">
+                <div class="metrics-header">
+                    <h2><i class="fas fa-chart-line"></i> Panel de Métricas</h2>
+                    <p>Indicadores clave del proyecto XP</p>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-book"></i></div>
+                        <div class="metric-value" id="metric-stories">0</div>
+                        <div class="metric-label">Historias de Usuario</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="metric-value" id="metric-completed">0</div>
+                        <div class="metric-label">Historias Completadas</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        <div class="metric-value" id="metric-velocity">0</div>
+                        <div class="metric-label">Velocidad Promedio</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-redo"></i></div>
+                        <div class="metric-value" id="metric-iterations">0</div>
+                        <div class="metric-label">Iteraciones</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-users"></i></div>
+                        <div class="metric-value" id="metric-team">0</div>
+                        <div class="metric-label">Miembros del Equipo</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-vial"></i></div>
+                        <div class="metric-value" id="metric-tests">0</div>
+                        <div class="metric-label">Pruebas Realizadas</div>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-bar"></i> Velocidad por Iteración</h3>
+                        <div id="velocity-chart" class="chart-placeholder">
+                            <canvas id="velocity-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-pie"></i> Distribución de Prioridades</h3>
+                        <div id="priority-chart" class="chart-placeholder">
+                            <canvas id="priority-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLANNING VIEW -->
+        <div id="view-planning" class="phase-view">
+            <div class="grid-container">
+                <div class="artifact-section">
+                    <h3><i class="fas fa-book"></i> Historias de Usuario</h3>
+                    <div id="stories-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('stories')">
+                        <i class="fas fa-plus"></i> Nueva Historia de Usuario
+                    </button>
+                </div>
+
+                <div class="artifact-section">
+                    <h3><i class="fas fa-truck"></i> Plan de Entregas</h3>
+                    <div id="releases-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('releases')">
+                        <i class="fas fa-plus"></i> Nuevo Plan de Entrega
+                    </button>
+                </div>
+
+                <div class="artifact-section">
+                    <h3><i class="fas fa-tachometer-alt"></i> Velocidad de Proyecto</h3>
+                    <div id="velocity-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('velocity')">
+                        <i class="fas fa-plus"></i> Registrar Velocidad
+                    </button>
+                </div>
+
+                <div class="artifact-section">
+                    <h3><i class="fas fa-redo"></i> Iteraciones</h3>
+                    <div id="iterations-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('iterations')">
+                        <i class="fas fa-plus"></i> Nueva Iteración
+                    </button>
+                </div>
+
+                <div class="artifact-section">
+                    <h3><i class="fas fa-sync-alt"></i> Rotaciones</h3>
+                    <div id="rotations-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('rotations')">
+                        <i class="fas fa-plus"></i> Nueva Rotación
+                    </button>
+                </div>
+
+                <div class="artifact-section">
+                    <h3><i class="fas fa-users"></i> Reuniones</h3>
+                    <div id="meetings-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('meetings')">
+                        <i class="fas fa-plus"></i> Nueva Reunión
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DESIGN VIEW -->
+        <div id="view-design" class="phase-view" style="display:none;">
+            <div class="grid-container">
+                <div class="artifact-section">
+                    <h3><i class="fas fa-lightbulb"></i> Metáfora del Sistema</h3>
+                    <div id="metaphor-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('metaphor')">
+                        <i class="fas fa-plus"></i> Agregar Metáfora
+                    </button>
+                </div>
+                <div class="artifact-section">
+                    <h3><i class="fas fa-id-card"></i> Tarjetas CRC</h3>
+                    <div id="crc-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('crc')">
+                        <i class="fas fa-plus"></i> Nueva Tarjeta CRC
+                    </button>
+                </div>
+                <div class="artifact-section">
+                    <h3><i class="fas fa-puzzle-piece"></i> Soluciones Puntuales</h3>
+                    <div id="spikes-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('spikes')">
+                        <i class="fas fa-plus"></i> Nueva Solución
+                    </button>
+                </div>
+                <div class="artifact-section">
+                    <h3><i class="fas fa-compress"></i> Funcionalidad Mínima</h3>
+                    <div id="minimal-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('minimal')">
+                        <i class="fas fa-plus"></i> Definir Funcionalidad
+                    </button>
+                </div>
+                <div class="artifact-section">
+                    <h3><i class="fas fa-recycle"></i> Reciclaje</h3>
+                    <div id="refactoring-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('refactoring')">
+                        <i class="fas fa-plus"></i> Registrar Reciclaje
+                    </button>
+                </div>
+                <div class="artifact-section">
+                    <h3><i class="fas fa-project-diagram"></i> Diagrama de Clases</h3>
+                    <div id="class-diagram-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('classDiagram')">
+                        <i class="fas fa-plus"></i> Subir Diagrama
+                    </button>
+                </div>
+                <div class="artifact-section">
+                    <h3><i class="fas fa-sitemap"></i> Casos de Uso</h3>
+                    <div id="use-cases-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('useCases')">
+                        <i class="fas fa-plus"></i> Subir Casos de Uso
+                    </button>
+                </div>
+                <div class="artifact-section">
+                    <h3><i class="fas fa-building"></i> Arquitectura</h3>
+                    <div id="architecture-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('architecture')">
+                        <i class="fas fa-plus"></i> Subir Arquitectura
+                    </button>
+                </div>
+                <div class="artifact-section">
+                    <h3><i class="fas fa-database"></i> Entidad-Relación</h3>
+                    <div id="er-diagram-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('erDiagram')">
+                        <i class="fas fa-plus"></i> Subir Diagrama ER
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CODING VIEW -->
+        <div id="view-coding" class="phase-view" style="display:none;">
+            <div class="grid-container">
+                <div class="artifact-section">
+                    <h3><i class="fas fa-user-check"></i> Disponibilidad del Cliente</h3>
+                    <div id="client-availability-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('clientAvailability')">
+                        <i class="fas fa-plus"></i> Registrar Disponibilidad
+                    </button>
+                </div>
+
+                <div class="artifact-section">
+                    <h3><i class="fas fa-vial"></i> Unidad de Pruebas</h3>
+                    <div id="unit-tests-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('unitTests')">
+                        <i class="fas fa-plus"></i> Nueva Prueba Unitaria
+                    </button>
+                </div>
+
+                <div class="artifact-section">
+                    <h3><i class="fas fa-user-friends"></i> Programación por Parejas</h3>
+                    <div id="pair-programming-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('pairProgramming')">
+                        <i class="fas fa-plus"></i> Registrar Sesión
+                    </button>
+                </div>
+
+                <div class="artifact-section">
+                    <h3><i class="fas fa-code-branch"></i> Integración Continua</h3>
+                    <div id="integration-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('integration')">
+                        <i class="fas fa-plus"></i> Registrar Integración
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TESTING VIEW -->
+        <div id="view-testing" class="phase-view" style="display:none;">
+            <div class="grid-container">
+                <div class="artifact-section">
+                    <h3><i class="fas fa-rocket"></i> Implantación</h3>
+                    <div id="deployment-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('deployment')">
+                        <i class="fas fa-plus"></i> Registrar Implantación
+                    </button>
+                </div>
+
+                <div class="artifact-section">
+                    <h3><i class="fas fa-clipboard-check"></i> Pruebas de Aceptación</h3>
+                    <div id="acceptance-tests-container"></div>
+                    <button class="btn-add-artifact" onclick="addArtifact('acceptanceTests')">
+                        <i class="fas fa-plus"></i> Nueva Prueba de Aceptación
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEAM VIEW -->
+        <div id="view-team" class="phase-view" style="display:none;">
+            <div class="team-container">
+                <div class="team-header">
+                    <h2><i class="fas fa-users-cog"></i> Gestión de Equipo</h2>
+                    <p>Roles y miembros del equipo XP</p>
+                </div>
+
+                <div class="grid-container" id="team-members-container"></div>
+
+                <button class="btn-add-artifact" onclick="addArtifact('teamMember')">
+                    <i class="fas fa-plus"></i> Agregar Miembro del Equipo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal" onclick="closeModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <h3 id="modal-title">Título</h3>
+            <div id="modal-content"></div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button class="btn-primary" onclick="saveArtifact()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
